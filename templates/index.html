@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emotion Detection</title>
+  {{ dropzone.load_css() }}
+  {{ dropzone.style('border: 2px dashed #0087F7; margin: 5%; min-height: 400px;') }}
+</head>
+<h1 style="text-align:center">Emotion Detector
+</h1>
+<p>This is a demo of a CNN trained model to classify emotions from images</p>
+<body>
+  {{ dropzone.create(action='upload') }}
+  {{ dropzone.load_js() }}
+  {{ dropzone.config() }}
+</body>
+</html>
