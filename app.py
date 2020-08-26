@@ -16,8 +16,10 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
+
 # Initialise worker
 tensorflow_worker = Worker()
+
 # Load model
 model = tensorflow_worker.load_tf_model()
 
@@ -30,9 +32,15 @@ def upload():
 
         image = tensorflow_worker.image_to_tensor(f)
 
+        prediction = tensorflow_worker.get_prediction(model, image)
+
         print("Hello")
 
-    return render_template('index.html')
+    return render_template('main.html')
+
+@app.route('/nn')
+def nn():
+    return render_template('nn.html')
 
 if __name__ == '__main__':
     app.run(host="178.128.40.146", debug=True)
