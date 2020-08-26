@@ -1,7 +1,9 @@
 import json
 import keras
 import tensorflow as tf
+from tensorflow import keras
 from keras.models import model_from_json
+
 
 class Worker(object):
 
@@ -10,10 +12,12 @@ class Worker(object):
         self.img_width = 64
         self.num_classes = 8
         self.metrics = keras.metrics.CategoricalAccuracy(name='accuracy')
-        self.checkpoint_path = "model/cp.ckpt.data-00000-of-00001"
-        self.class_json = "static/class_mapping.json"
+        self.checkpoint_path = "./model/weights.best.hdf5"
+        self.class_json = "model/class_mapping.json"
         self.model_path = "model/model.json"
-        with open(self.filename) as f_in:
+        self.emoji_dict = {"anger": "128545", "contempt": "128530", "disgust": "128567", "fear": "128561",
+                           "hapiness": "128515", "neutral": "128528", "sadness": "128542", "surprise": "128559"}
+        with open(self.class_json) as f_in:
             self.classes =  json.load(f_in)
 
     def load_model(self):
@@ -47,4 +51,5 @@ class Worker(object):
 
     def get_prediction(self, model, image):
         prediction = model.predict(image)
-        return self.classes[str(prediction)]
+        emotion = self.classes[str(prediction)]
+        return emotion, self.emoji_dict[emotion]
