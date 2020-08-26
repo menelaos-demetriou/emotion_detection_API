@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, render_template
+from tf_worker import Worker
 from flask_dropzone import Dropzone
 
 app = Flask(__name__)
@@ -15,12 +16,21 @@ app.config.update(
 )
 
 dropzone = Dropzone(app)
+# Initialise worker
+tensorflow_worker = Worker()
+# Load model
+model = tensorflow_worker.load_tf_model()
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
 
     if request.method == 'POST':
+
         f = request.files.get('file')
+
+        image = tensorflow_worker.image_to_tensor(f)
+
+        print("Hello")
 
     return render_template('index.html')
 
