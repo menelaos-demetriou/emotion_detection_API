@@ -1,4 +1,4 @@
-FROM tensorflow:nightly-py3-jupyter
+FROM tensorflow:nightly-py3
 
 COPY . /app
 

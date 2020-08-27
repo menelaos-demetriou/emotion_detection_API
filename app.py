@@ -19,21 +19,25 @@ app.config.update(
 dropzone = Dropzone(app)
 
 # Initialise worker
-# tensorflow_worker = Worker()
+tensorflow_worker = Worker()
 
 # Load model
-# model = tensorflow_worker.load_tf_model()
+model = tensorflow_worker.load_tf_model()
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
     global emotion, emoji
-    f = request.files.get('file')
-    # image = tensorflow_worker.image_to_tensor(f)
-    #
-    # prediction = tensorflow_worker.get_prediction(model, image)
 
-    emotion = "hapiness"
-    emoji = "128513"
+    if request.method == 'POST':
+        f = request.files.get('file')
+
+        f.save(f.filename)
+
+        image = tensorflow_worker.image_to_tensor(f.filename)
+
+        os.remove(f.filename)
+
+        emotion, emoji = tensorflow_worker.get_prediction(model, image)
 
     return render_template('main.html')
 

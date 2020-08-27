@@ -12,7 +12,7 @@ class Worker(object):
         self.img_width = 64
         self.num_classes = 8
         self.metrics = keras.metrics.CategoricalAccuracy(name='accuracy')
-        self.checkpoint_path = "./model/weights.best.hdf5"
+        self.checkpoint_path = "./model/cp.cpkt"
         self.class_json = "model/class_mapping.json"
         self.model_path = "model/model.json"
         self.emoji_dict = {"anger": "128545", "contempt": "128530", "disgust": "128567", "fear": "128561",
@@ -27,13 +27,16 @@ class Worker(object):
         loaded_model = model_from_json(loaded_model_json)
         return loaded_model
 
-    def image_to_tensor(self, data):
-        image = tf.image.decode_jpeg(data, channels=1)
+    def image_to_tensor(self, filename):
+        image = tf.io.read_file(filename)
+        image = tf.image.decode_jpeg(image, channels=1)
 
         # This will convert to float values in [0, 1]
         image = tf.image.convert_image_dtype(image, tf.float32)
 
         resized_image = tf.image.resize(image, [self.img_height, self.img_width])
+
+        resized_image = tf.expand_dims(resized_image, axis=0)
 
         return resized_image
 
@@ -51,5 +54,5 @@ class Worker(object):
 
     def get_prediction(self, model, image):
         prediction = model.predict(image)
-        emotion = self.classes[str(prediction)]
+        emotion = self.classes[str(prediction.argmax())]
         return emotion, self.emoji_dict[emotion]
